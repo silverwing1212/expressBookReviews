@@ -5,25 +5,9 @@ let users = require("./auth_users.js").users;
 let forEachEntry = require("../util.js").forEachEntry;
 let queryKey = require("../util.js").queryKey;
 let queryIndex = require("../util.js").queryIndex;
+let queryUserWithUsername = require("./auth_users.js").queryUserWithUsername;
+let queryBookWithKey = require("./auth_users.js").queryBookWithKey;
 const public_users = express.Router();
-
-const queryBookWithKey = (targetKey, targetValue) => {
-    const bookKey = queryKey(books, (isbn, book) => book[targetKey] === targetValue);
-    if (bookKey !== null) {
-        return books[bookKey]
-    } else {
-        return null;
-    }
-}
-
-const queryUserWithUsername = (username) => {
-    const userIndex = queryIndex(users, (user) => user.username === username);
-    if (userIndex > -1) {
-        return users[userIndex]
-    } else {
-        return null;
-    }
-}
 
 public_users.get("/users", (req,res) => {
     return res.send(users);
