@@ -2,14 +2,11 @@ const express = require('express');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
-let forEachEntry = require("../util.js").forEachEntry;
-let queryKey = require("../util.js").queryKey;
-let queryIndex = require("../util.js").queryIndex;
 let queryUserWithUsername = require("./auth_users.js").queryUserWithUsername;
 let queryBookWithKey = require("./auth_users.js").queryBookWithKey;
 const public_users = express.Router();
 
-public_users.get("/users", (req,res) => {
+public_users.get("/register", (req,res) => {
     return res.send(users);
 });
 

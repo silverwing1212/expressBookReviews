@@ -1,5 +1,8 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+let forEachEntry = require("../util.js").forEachEntry;
+let queryKey = require("../util.js").queryKey;
+let queryIndex = require("../util.js").queryIndex;
 let books = require("./booksdb.js");
 const regd_users = express.Router();
 
@@ -44,7 +47,7 @@ const authenticatedUser = (username,password)=>{
 //only registered users can login
 regd_users.post("/login", (req,res) => {
   if (authenticatedUser(req.body.username, req.body.password)) {
-    req.session.authorization = { accessToken: jwt.sign({ data: password }, 'access', { expiresIn: 60 * 60 }), username}
+    req.session.authorization = { accessToken: jwt.sign({ data: req.body.password }, 'access', { expiresIn: 60 * 60 }), username: req.body.username}
     res.send("User successfully logged in!");
   } else {
       res.status(404).json({ message: "Incorrect username or password" });
@@ -55,7 +58,18 @@ regd_users.post("/login", (req,res) => {
 regd_users.put("/auth/review/:isbn", (req, res) => {
   const book = books[req.params.isbn]
   if (book) {
-    book.reviews.push(req.body.review);
+    book.reviews[req.session.authorization.username] = req.body.review;
+    return res.send("Book review successfully added");
+  } else {
+    return res.status(400).json({message: "No book found"});
+  }
+});
+
+// Delete a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+  const book = books[req.params.isbn]
+  if (book) {
+    delete book.reviews[req.session.authorization.username];
     return res.send("Book review successfully added");
   } else {
     return res.status(400).json({message: "No book found"});
