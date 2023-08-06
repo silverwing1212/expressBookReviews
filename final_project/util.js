@@ -3,14 +3,14 @@ const forEachEntry = (map, iterator) => {
     keys.forEach((key, index) => iterator(key, map[key]));
 }
 
-const queryKey = (map, predicate) => {
-    const targetItem = { value: null};
+const queryValues = (map, predicate) => {
+    const values = []
     forEachEntry(map, (key, value) => {
-        if (targetItem.value === null && predicate(key, value)) {
-            targetItem.value = key;
+        if (predicate(key, value)) {
+            values.push(value)
         }
     })
-    return targetItem.value;
+    return values;
 }
 
 const queryIndex = (list, predicate) => {
@@ -24,5 +24,5 @@ const queryIndex = (list, predicate) => {
 }
 
 module.exports.forEachEntry = forEachEntry;
-module.exports.queryKey = queryKey;
+module.exports.queryValues = queryValues;
 module.exports.queryIndex = queryIndex;
